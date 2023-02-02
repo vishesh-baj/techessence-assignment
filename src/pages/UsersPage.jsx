@@ -325,13 +325,13 @@ const UsersPage = () => {
               value={rowToEdit?.roleKey}
             />
             <input
-              placeholder="Password"
+              placeholder="New Password"
               className="input input-info"
               type="password"
-              name="username"
+              name="password"
               id="editPassword"
               onChange={(e) => handleEditChange(e)}
-              value={rowToEdit?.password}
+              defaultValue=""
             />
             <button className="btn btn-primary">Edit User</button>
           </form>

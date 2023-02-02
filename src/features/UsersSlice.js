@@ -36,10 +36,10 @@ const UserSlice = createSlice({
       );
     },
     editUser: (state, action) => {
-      console.log(action.payload);
-      // state.usersList = state.usersList.findIndex(action.payload);
+      state.usersList = state.usersList.map((obj) =>
+        obj.id === action.payload.id ? action.payload : obj
+      );
     },
-    getAllUsers: (state, action) => {},
   },
 });
 
