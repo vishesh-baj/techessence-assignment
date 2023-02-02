@@ -10,6 +10,7 @@ import uuid from "react-uuid";
 
 const UsersPage = () => {
   const users = useSelector((state) => state.users.usersList);
+  const roles = useSelector((state) => state.roles.rolesList);
   const dispatch = useDispatch();
   const addUserModalRef = useRef();
   const editUserModalRef = useRef();
@@ -32,7 +33,12 @@ const UsersPage = () => {
       .min(10, "minimum of 10 characters required")
       .required("mobile is required"),
     roleKey: yup.string().required("role key is required"),
+    password: yup
+      .string()
+      .min(3, "password must be min 3 characters")
+      .required("password is required"),
   });
+
   const {
     register,
     handleSubmit,
@@ -65,10 +71,17 @@ const UsersPage = () => {
       confirmButtonColor: "teal",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
+      background: "black",
+      color: "white",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your file has been deleted.", "success");
         dispatch(deleteUser(rowToDelete));
+        Swal.fire({
+          title: "Deleted! Your entry has been deleted successfully",
+          icon: "success",
+          background: "black",
+          color: "white",
+        });
         console.log("DELETED: ", rowToDelete);
       }
     });
@@ -85,7 +98,6 @@ const UsersPage = () => {
     {
       Header: "Name",
       accessor: "name",
-      // disableFilters: true,
       sticky: "left",
     },
     {
@@ -153,14 +165,14 @@ const UsersPage = () => {
 
       <div className="w-full flex justify-between px-4">
         <h1 className="text-xl">User table</h1>
-        <label htmlFor="add-user-modal" className="btn">
+        <label htmlFor="add-user-modal" className="btn btn-primary">
           add user
         </label>
       </div>
 
       {/* table */}
       <div className="overflow-x-auto mt-4 mx-4">
-        <table className="table w-full" {...getTableProps()}>
+        <table className="table-zebra table w-full" {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -198,7 +210,30 @@ const UsersPage = () => {
       {/* MODAL FOR ADDING USER */}
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Enter User Details</h3>
+          <div className="w-full flex justify-between">
+            <h3 className="font-bold text-lg">Enter User Details</h3>
+            <button
+              onClick={() => {
+                addUserModalRef.current.checked = false;
+              }}
+              className="btn btn-circle btn-outline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 w-full p-4"
@@ -239,14 +274,17 @@ const UsersPage = () => {
               id="mobile"
             />
             <p className="text-rose-500">{errors.mobile?.message}</p>
-            <input
+            <select
               {...register("roleKey")}
+              className="select select-info w-full"
               placeholder="Role Key"
-              className="input input-info"
-              type="text"
-              name="roleKey"
               id="roleKey"
-            />
+              name="roleKey"
+            >
+              {roles.map((role) => (
+                <option>{role.roleLabel}</option>
+              ))}
+            </select>
             <p className="text-rose-500">{errors.roleKey?.message}</p>
             <input
               {...register("password")}
@@ -274,7 +312,30 @@ const UsersPage = () => {
       {/* MODAL FOR EDITING USER */}
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Edit User Details</h3>
+          <div className="flex justify-between w-full">
+            <h3 className="font-bold text-lg">Edit User Details</h3>
+            <button
+              onClick={() => {
+                editUserModalRef.current.checked = false;
+              }}
+              className="btn btn-circle btn-outline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
           <form
             onSubmit={(e) => handleEditSubmit(e)}
             className="flex flex-col gap-4 w-full p-4"
@@ -315,15 +376,18 @@ const UsersPage = () => {
               onChange={(e) => handleEditChange(e)}
               value={rowToEdit?.mobile}
             />
-            <input
+            <select
+              onChange={(e) => console.log(e.target.value)}
+              className="select select-info w-full"
               placeholder="Role Key"
-              className="input input-info"
-              type="text"
-              name="roleKey"
               id="editRoleKey"
-              onChange={(e) => handleEditChange(e)}
               value={rowToEdit?.roleKey}
-            />
+            >
+              {roles.map((role) => (
+                <option>{role.roleLabel}</option>
+              ))}
+            </select>
+
             <input
               placeholder="New Password"
               className="input input-info"

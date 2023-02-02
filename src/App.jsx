@@ -10,8 +10,18 @@ const App = () => {
       <nav className="w-screen  px-8 py-4 flex justify-between bg-base-200">
         <div>LOGO</div>
         <div className="flex gap-4">
-          <NavLink to={PATHS.userRoute}>Users</NavLink>
-          <NavLink to={PATHS.roleRoute}>Roles</NavLink>
+          <NavLink
+            className={({ isActive }) => `${isActive && "btn-accent"} btn`}
+            to={PATHS.userRoute}
+          >
+            Users
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => `${isActive && "btn-accent"} btn`}
+            to={PATHS.roleRoute}
+          >
+            Roles
+          </NavLink>
         </div>
       </nav>
       <Routes>

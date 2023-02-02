@@ -53,9 +53,16 @@ const RolesPage = () => {
       confirmButtonColor: "teal",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
+      background: "black",
+      color: "white",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        Swal.fire({
+          title: "Deleted! Your entry has been deleted.",
+          icon: "success",
+          background: "black",
+          color: "white",
+        });
         dispatch(deleteRole(rowToDelete));
         console.log("DELETED: ", rowToDelete);
       }
@@ -125,14 +132,13 @@ const RolesPage = () => {
 
       <div className="w-full flex justify-between px-4">
         <h1 className="text-xl">Role table</h1>
-        <label htmlFor="add-role-modal" className="btn">
+        <label htmlFor="add-role-modal" className="btn btn-primary">
           add role
         </label>
       </div>
-
       {/* table */}
       <div className="overflow-x-auto mt-4 mx-4">
-        <table className="table w-full" {...getTableProps()}>
+        <table className="table table-zebra w-full" {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -170,7 +176,30 @@ const RolesPage = () => {
       {/* MODAL FOR ADDING ROLE */}
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Enter Role Details</h3>
+          <div className="w-full flex justify-between">
+            <h3 className="font-bold text-lg">Enter Role Details</h3>
+            <button
+              onClick={() => {
+                addRolesModalRef.current.checked = false;
+              }}
+              className="btn btn-circle btn-outline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 w-full p-4"
@@ -210,7 +239,30 @@ const RolesPage = () => {
       {/* MODAL FOR EDITING ROLE */}
       <div className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Edit Role Details</h3>
+          <div className="flex justify-between w-full">
+            <h3 className="font-bold text-lg">Edit Role Details</h3>
+            <button
+              onClick={() => {
+                editRoleModalRef.current.checked = false;
+              }}
+              className="btn btn-circle btn-outline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
           <form
             onSubmit={(e) => handleEditSubmit(e)}
             className="flex flex-col gap-4 w-full p-4"
