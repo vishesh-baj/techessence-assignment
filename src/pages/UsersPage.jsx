@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useTable } from "react-table";
@@ -11,7 +11,9 @@ import uuid from "react-uuid";
 const UsersPage = () => {
   const users = useSelector((state) => state.users.usersList);
   const dispatch = useDispatch();
-  const modalRef = useRef();
+  const addUserModalRef = useRef();
+  const editUserModalRef = useRef();
+  const [rowToEdit, setRowToEdit] = useState();
   const schema = yup.object({
     name: yup
       .string()
@@ -39,9 +41,21 @@ const UsersPage = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleEdit = (rowToEdit) => {
+  const handleEditChange = (e) => {
+    setRowToEdit({ ...rowToEdit, [e.target.name]: e.target.value });
     console.log(rowToEdit);
   };
+  const handleEdit = (rowToEdit) => {
+    editUserModalRef.current.checked = true;
+    setRowToEdit(rowToEdit);
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    editUserModalRef.current.checked = false;
+    dispatch(editUser(rowToEdit));
+  };
+
   const handleDelete = (rowToDelete) => {
     Swal.fire({
       title: "Are you sure?",
@@ -61,9 +75,10 @@ const UsersPage = () => {
   };
 
   const onSubmit = (userData) => {
-    modalRef.current.checked = false;
-    dispatch(addUser(userData));
-    console.log("USER_DATA:", userData);
+    // disable modal
+    addUserModalRef.current.checked = false;
+    dispatch(addUser({ id: uuid(), ...userData }));
+    console.log("USER_DATA:", { id: uuid(), ...userData });
   };
 
   const COLUMNS = [
@@ -126,17 +141,11 @@ const UsersPage = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => users, [users]);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    footerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  });
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({
+      columns,
+      data,
+    });
 
   return (
     <main className="w-screen h-auto bg-base-300">
@@ -144,7 +153,7 @@ const UsersPage = () => {
 
       <div className="w-full flex justify-between px-4">
         <h1 className="text-xl">User table</h1>
-        <label htmlFor="my-modal" className="btn">
+        <label htmlFor="add-user-modal" className="btn">
           add user
         </label>
       </div>
@@ -179,13 +188,14 @@ const UsersPage = () => {
           </tbody>
         </table>
       </div>
-
+      {/* INPUT TOGGLE FOR ADD USER */}
       <input
-        ref={modalRef}
+        ref={addUserModalRef}
         type="checkbox"
-        id="my-modal"
+        id="add-user-modal"
         className="modal-toggle"
       />
+      {/* MODAL FOR ADDING USER */}
       <div className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Enter User Details</h3>
@@ -201,6 +211,7 @@ const UsersPage = () => {
               name="name"
               id="name"
             />
+            <p className="text-rose-500">{errors.name?.message}</p>
             <input
               {...register("email")}
               placeholder="Email"
@@ -209,6 +220,7 @@ const UsersPage = () => {
               name="email"
               id="email"
             />
+            <p className="text-rose-500">{errors.email?.message}</p>
             <input
               {...register("username")}
               placeholder="User Name"
@@ -217,6 +229,7 @@ const UsersPage = () => {
               name="username"
               id="username"
             />
+            <p className="text-rose-500">{errors.username?.message}</p>
             <input
               {...register("mobile")}
               placeholder="Mobile"
@@ -225,6 +238,7 @@ const UsersPage = () => {
               name="mobile"
               id="mobile"
             />
+            <p className="text-rose-500">{errors.mobile?.message}</p>
             <input
               {...register("roleKey")}
               placeholder="Role Key"
@@ -233,6 +247,7 @@ const UsersPage = () => {
               name="roleKey"
               id="roleKey"
             />
+            <p className="text-rose-500">{errors.roleKey?.message}</p>
             <input
               {...register("password")}
               placeholder="Password"
@@ -241,13 +256,84 @@ const UsersPage = () => {
               name="password"
               id="password"
             />
-            <button
-              typeof="button"
-              htmlFor="my-modal"
-              className="btn btn-primary"
-            >
+            <p className="text-rose-500">{errors.password?.message}</p>
+            <button type="submit" className="btn btn-primary">
               Add User
             </button>
+          </form>
+        </div>
+      </div>
+
+      {/* INPUT TOGGLE FOR EDIT USER */}
+      <input
+        ref={editUserModalRef}
+        type="checkbox"
+        id="edit-user-modal"
+        className="modal-toggle"
+      />
+      {/* MODAL FOR EDITING USER */}
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit User Details</h3>
+          <form
+            onSubmit={(e) => handleEditSubmit(e)}
+            className="flex flex-col gap-4 w-full p-4"
+          >
+            <input
+              placeholder="Name"
+              className="input input-info"
+              type="text"
+              name="name"
+              id="editName"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.name}
+            />
+            <input
+              placeholder="Email"
+              className="input input-info"
+              type="email"
+              name="email"
+              id="editEmail"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.email}
+            />
+            <input
+              placeholder="Username"
+              className="input input-info"
+              type="text"
+              name="username"
+              id="editUsername"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.username}
+            />
+            <input
+              placeholder="Mobile"
+              className="input input-info"
+              type="tel"
+              name="mobile"
+              id="editMobile"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.mobile}
+            />
+            <input
+              placeholder="Role Key"
+              className="input input-info"
+              type="text"
+              name="roleKey"
+              id="editRoleKey"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.roleKey}
+            />
+            <input
+              placeholder="Password"
+              className="input input-info"
+              type="password"
+              name="username"
+              id="editPassword"
+              onChange={(e) => handleEditChange(e)}
+              value={rowToEdit?.password}
+            />
+            <button className="btn btn-primary">Edit User</button>
           </form>
         </div>
       </div>
