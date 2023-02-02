@@ -25,7 +25,9 @@ const UserSlice = createSlice({
   name: "user-slice",
   initialState,
   reducers: {
-    addUser: (state, action) => {},
+    addUser: (state, action) => {
+      state.usersList = [...state.usersList, action.payload];
+    },
     deleteUser: (state, action) => {
       state.usersList = state.usersList.filter(
         (item) => item.name !== action.payload.name
