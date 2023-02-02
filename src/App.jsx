@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { PATHS } from "./paths";
 import RolesPage from "./pages/RolesPage";
 import UsersPage from "./pages/UsersPage";
@@ -39,6 +39,7 @@ const App = () => {
       <Routes>
         <Route path={PATHS.userRoute} element={<UsersPage />} />
         <Route path={PATHS.roleRoute} element={<RolesPage />} />
+        <Route path="/" element={<Navigate to={PATHS.userRoute} />} />
       </Routes>
     </main>
   );
