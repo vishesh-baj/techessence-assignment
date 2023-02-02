@@ -7,7 +7,7 @@ import { deleteUser, editUser, addUser } from "../features/UsersSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import uuid from "react-uuid";
-
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 const UsersPage = () => {
   const users = useSelector((state) => state.users.usersList);
   const roles = useSelector((state) => state.roles.rolesList);
@@ -69,7 +69,7 @@ const UsersPage = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "teal",
-      cancelButtonColor: "#d33",
+      cancelButtonColor: "#610606",
       confirmButtonText: "Yes, delete it!",
       background: "black",
       color: "white",
@@ -128,9 +128,9 @@ const UsersPage = () => {
         return (
           <button
             onClick={() => handleEdit(cell?.row?.original)}
-            className="btn btn-info"
+            className="btn btn-info btn-square btn-outline"
           >
-            Edit
+            <AiOutlineEdit className="text-xl" />
           </button>
         );
       },
@@ -141,9 +141,9 @@ const UsersPage = () => {
         return (
           <button
             onClick={() => handleDelete(cell?.row?.original)}
-            className="btn btn-error"
+            className="btn btn-error btn-circle btn-outline"
           >
-            Delete
+            <AiOutlineDelete className="text-xl" />
           </button>
         );
       },
@@ -160,7 +160,7 @@ const UsersPage = () => {
     });
 
   return (
-    <main className="w-screen h-auto bg-base-300">
+    <main className="w-screen h-[90vh] bg-base-300">
       <h1 className="text-center text-4xl py-6">Users Page</h1>
 
       <div className="w-full flex justify-between px-4">
@@ -281,6 +281,9 @@ const UsersPage = () => {
               id="roleKey"
               name="roleKey"
             >
+              <option disabled selected>
+                Choose a role
+              </option>
               {roles.map((role) => (
                 <option>{role.roleLabel}</option>
               ))}

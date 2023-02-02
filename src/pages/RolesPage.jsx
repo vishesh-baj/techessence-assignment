@@ -7,7 +7,7 @@ import { deleteRole, editRole, addRole } from "../features/RolesSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import uuid from "react-uuid";
-
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 const RolesPage = () => {
   const roles = useSelector((state) => state.roles.rolesList);
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const RolesPage = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "teal",
-      cancelButtonColor: "#d33",
+      cancelButtonColor: "#610606",
       confirmButtonText: "Yes, delete it!",
       background: "black",
       color: "white",
@@ -95,9 +95,9 @@ const RolesPage = () => {
         return (
           <button
             onClick={() => handleEdit(cell?.row?.original)}
-            className="btn btn-info"
+            className="btn btn-info btn-square btn-outline"
           >
-            Edit
+            <AiOutlineEdit className="text-xl" />
           </button>
         );
       },
@@ -108,9 +108,9 @@ const RolesPage = () => {
         return (
           <button
             onClick={() => handleDelete(cell?.row?.original)}
-            className="btn btn-error"
+            className="btn btn-circle btn-outline btn-error"
           >
-            Delete
+            <AiOutlineDelete className="text-xl" />
           </button>
         );
       },
@@ -127,7 +127,7 @@ const RolesPage = () => {
     });
 
   return (
-    <main className="w-screen h-auto bg-base-300">
+    <main className="w-screen h-[90vh] bg-base-300">
       <h1 className="text-center text-4xl py-6">Roles Page</h1>
 
       <div className="w-full flex justify-between px-4">
