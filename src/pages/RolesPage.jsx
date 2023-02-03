@@ -8,6 +8,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import uuid from "react-uuid";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+
+
+
+
+
+// roles page
 const RolesPage = () => {
   const roles = useSelector((state) => state.roles.rolesList);
   const dispatch = useDispatch();
@@ -29,13 +35,13 @@ const RolesPage = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleEditChange = (e) => {
-    setRowToEdit({ ...rowToEdit, [e.target.name]: e.target.value });
-    console.log(rowToEdit);
-  };
   const handleEdit = (rowToEdit) => {
     editRoleModalRef.current.checked = true;
     setRowToEdit(rowToEdit);
+  };
+  const handleEditChange = (e) => {
+    setRowToEdit({ ...rowToEdit, [e.target.name]: e.target.value });
+    console.log(rowToEdit);
   };
 
   const handleEditSubmit = (e) => {
@@ -70,18 +76,15 @@ const RolesPage = () => {
   };
 
   const onSubmit = (rolesData) => {
-    // // disable modal
     addRolesModalRef.current.checked = false;
     dispatch(addRole({ id: uuid(), ...rolesData }));
     console.log("ROLE_DATA:", { id: uuid(), ...rolesData });
-    // console.log("ACAS");
   };
 
   const COLUMNS = [
     {
       Header: "Role Label",
       accessor: "roleLabel",
-      // disableFilters: true,
       sticky: "left",
     },
     {
